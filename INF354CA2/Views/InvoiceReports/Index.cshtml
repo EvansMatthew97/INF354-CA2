@@ -36,6 +36,8 @@
                 yValues: Model.yAxis.ToArray()
             ).ToWebImage().GetBytes())" />
 
+<center>Total for period: <b>@string.Format("{0:C}", Model.yAxis.Sum())</b></center>
+
 @foreach (var group in Model.groups)
 {
     <h2>@group.title - @string.Format("{0:C}", group.total)</h2>

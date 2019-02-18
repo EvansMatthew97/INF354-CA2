@@ -27,7 +27,7 @@ namespace INF354CA2.Controllers
             ViewBag.startDate = startDate;
             ViewBag.endDate = endDate;
             ViewBag.groupBy = groupBy;
-
+            
             var productTotals = db.lgproducts.Select(product => new InvoiceProductTotal
             {
                 product = product,
