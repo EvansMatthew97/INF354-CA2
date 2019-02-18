@@ -1,0 +1,75 @@
+﻿@model INF354CA2.Models.ViewModels.InvoiceReport
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Invoices Report</h2>
+
+@using (@Html.BeginForm("Index", "InvoiceReports", FormMethod.Get))
+{
+    <div>
+        <label for="startDate">Start date</label>
+        <input type="datetime" id="startDate" value="@ViewBag.startDate" name="startDate" />
+    </div>
+    <div>
+        <label for="endDate">End date</label>
+        <input type="datetime" id="endDate" value="@ViewBag.endDate" name="endDate" />
+    </div>
+    <div>
+        <label for="groupBy">Group by</label>
+        <select name="groupBy" id="groupBy">
+            <option value="brand" @(ViewBag.groupBy == "brand" ? "selected" : "")>Brand</option>
+            <option value="prod_type" @(ViewBag.groupBy == "prod_type" ? "selected" : "")>Product type</option>
+            <option value="prod_base" @(ViewBag.groupBy == "prod_base" ? "selected" : "")>Product base</option>
+            <option value="prod_category" @(ViewBag.groupBy == "prod_category" ? "selected" : "")>Product Category</option>
+        </select>
+    </div>
+    <input type="submit" value="Generate report" />
+}
+
+    <img src="data:image/jpg;base64,@Convert.ToBase64String(new Chart(width: 600, height: 400)
+            .AddTitle("Graph Summary")
+            .AddSeries(
+                name: "Groups",
+                xValue: Model.xAxis.ToArray(),
+                yValues: Model.yAxis.ToArray()
+            ).ToWebImage().GetBytes())" />
+
+@foreach (var group in Model.groups)
+{
+    <h2>@group.title - @string.Format("{0:C}", group.total)</h2>
+    <table>
+        <tr>
+            <th>SKU</th>
+            <th>Base</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>QoH</th>
+            <th>Price</th>
+            <th>Total sales for period</th>
+        </tr>
+        @foreach (var g in group.products) {
+        <tr>
+            <td>@g.product.prod_sku</td>
+            <td>@g.product.prod_base</td>
+            <td>@g.product.prod_type</td>
+            <td>@g.product.prod_category</td>
+            <td>@g.product.lgbrand.brand_name</td>
+            <td class="number">@g.product.prod_qoh</td>
+            <td class="number">@string.Format("{0:C}", g.product.prod_price)</td>
+            <td class="number">@string.Format("{0:C}", g.total)</td>
+        </tr>
+        }
+        <td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Total</td>
+            <td class="total number">@string.Format("{0:C}", group.total)</td>
+        </td>
+    </table>
+}

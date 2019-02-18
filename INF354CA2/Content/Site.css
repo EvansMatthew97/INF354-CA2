@@ -22,3 +22,20 @@ select,
 textarea {
     max-width: 280px;
 }
+
+td, th {
+    padding: 5px;
+    border: 1px solid #000;
+}
+
+td.total {
+    font-weight: bold;
+}
+
+td.number {
+    text-align: right;
+}
+
+table tr:last-child td {
+    border: none;
+}
