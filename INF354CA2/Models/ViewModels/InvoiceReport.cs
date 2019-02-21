@@ -10,5 +10,6 @@ namespace INF354CA2.Models.ViewModels
         public List<ProductGroup> groups;
         public List<string> xAxis;
         public List<decimal> yAxis;
+        public List<ChartItem> sales;
     }
 }

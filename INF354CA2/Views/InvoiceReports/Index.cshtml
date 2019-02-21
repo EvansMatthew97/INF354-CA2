@@ -29,12 +29,24 @@
 }
 
     <img src="data:image/jpg;base64,@Convert.ToBase64String(new Chart(width: 600, height: 400)
-            .AddTitle("Graph Summary")
-            .AddSeries(
-                name: "Groups",
-                xValue: Model.xAxis.ToArray(),
-                yValues: Model.yAxis.ToArray()
-            ).ToWebImage().GetBytes())" />
+.AddTitle("Graph Summary")
+.AddSeries(
+name: "Groups",
+xValue: Model.xAxis.ToArray(),
+yValues: Model.yAxis.ToArray()
+).ToWebImage().GetBytes())" />
+
+    @{ 
+        var chart = new Chart(width: 1200, height: 400);
+        foreach (var group in Model.sales)
+        {
+            chart.AddSeries(group.name, chartType: "Spline",
+                xValue: group.xValue,
+                yValues: group.yValues
+            );
+        }
+    }
+    <img src="data:image/jpg;base64,@Convert.ToBase64String(chart.ToWebImage().GetBytes())" />
 
 <center>Total for period: <b>@string.Format("{0:C}", Model.yAxis.Sum())</b></center>
 

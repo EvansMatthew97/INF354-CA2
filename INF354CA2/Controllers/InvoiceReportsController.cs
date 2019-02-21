@@ -45,11 +45,37 @@ namespace INF354CA2.Controllers
                 .OrderByDescending(g => g.total)
                 .ToList();
 
+            var sales = breakPointedGroups
+                .Select(g => new
+                {
+                    title = g.title,
+                    sales = from line in g.products
+                        .SelectMany(p => p.product.lglines
+                            .Where(l => l.lginvoice.inv_DATETIME >= startDate && l.lginvoice.inv_DATETIME <= endDate)
+                        )
+                        .Select(l => new
+                        {
+                            total = l.line_price * l.line_qty,
+                            date = l.lginvoice.inv_DATETIME
+                        }
+                        )
+                        .OrderBy(e => e.date)
+                            group line by ((DateTime)line.date).ToString("yyyy-MM-dd") into gg
+                            select new { date = DateTime.Parse(gg.Key), total = gg.Sum(ggg => ggg.total) }
+                }).Select(g => new ChartItem
+                {
+                    name = g.title,
+                    xValue = g.sales.Select(s => (DateTime)s.date).ToArray(),
+                    yValues = g.sales.Select(s => (decimal)s.total).ToArray(),
+                }).ToList();
+
             InvoiceReport report = new InvoiceReport {
                 groups = breakPointedGroups,
                 xAxis = breakPointedGroups.Select(g => g.title).ToList(),
-                yAxis = breakPointedGroups.Select(g => g.total).ToList()
+                yAxis = breakPointedGroups.Select(g => g.total).ToList(),
+                sales = sales,
             };
+
             return View(report);
         }
     }
